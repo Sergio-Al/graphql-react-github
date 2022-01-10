@@ -1,25 +1,52 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from "react";
+import Form from "./components/Form/Form";
+import Organization from "./components/Organization/Organization";
+import { Container, Box, Divider, Typography } from "@mui/material";
+
+import { APIGithubGraphQL } from "./api";
+import { GET_ISSUES_OF_REPOSITORY} from "./api/requests";
 
 function App() {
+  const [organization, setOrganization] = useState(null);
+  const [errors, setErrors] = useState([]);
+  const TITLE: string = "React GraphQL Github Client";
+
+  const onFetchFromGithub = () => {
+    APIGithubGraphQL.post("", { query: GET_ISSUES_OF_REPOSITORY}).then((response) => {
+      setOrganization(response.data.data.organization);
+      setErrors(response.data.errors);
+    });
+  };
+
+  useEffect(() => {
+    onFetchFromGithub();
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Container
+      maxWidth="lg"
+      sx={{
+        "&>*": {
+          my: 3,
+        },
+      }}
+    >
+      <Box textAlign="center">
+        <h1>{TITLE}</h1>
+      </Box>
+      <Divider />
+      <Box>
+        <Form />
+      </Box>
+      <Divider />
+      {organization ? (
+        <Organization organization={organization} errors={errors} />
+      ) : (
+        <Typography variant="overline" display="block" gutterBottom>
+          Results coming soon
+        </Typography>
+      )}
+    </Container>
   );
 }
 
