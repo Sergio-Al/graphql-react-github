@@ -13,9 +13,24 @@ import {
   Grid,
 } from "@mui/material";
 import { NearbyError } from "@mui/icons-material";
+import { styled } from "@mui/material/styles";
 
 import { RepositoryType } from "../../utils/types";
 import { ocurrencesReactions } from "../../utils/Ocurrences";
+
+const CustomListItemButton = styled(ListItemButton)(({ theme }) => ({
+  flexWrap: "wrap",
+  [theme.breakpoints.only("xs")]: {
+    padding: theme.spacing(1),
+    boxShadow: `box-shadow: 2px 7px 26px -13px rgba(0,0,0,0.5);
+    -webkit-box-shadow: 2px 7px 26px -13px rgba(0,0,0,0.5);
+    -moz-box-shadow: 2px 7px 26px -13px rgba(0,0,0,0.5);`,
+    marginBottom: "20px",
+    "& > *": {
+      marginBottom: "10px",
+    },
+  },
+}));
 
 export default function Repository({
   repository,
@@ -64,7 +79,7 @@ export default function Repository({
         Issues
       </Typography>
       {repository.issues.edges.length > 0 ? (
-        <>
+        <Box>
           <List>
             {repository.issues.edges.map((issue) => (
               <Link
@@ -73,7 +88,7 @@ export default function Repository({
                 underline="none"
                 target="_blank"
               >
-                <ListItemButton>
+                <CustomListItemButton>
                   <ListItemIcon>
                     <NearbyError />
                   </ListItemIcon>
@@ -101,7 +116,7 @@ export default function Repository({
                       )}
                     </List>
                   </Box>
-                </ListItemButton>
+                </CustomListItemButton>
               </Link>
             ))}
           </List>
@@ -110,7 +125,7 @@ export default function Repository({
               More
             </Button>
           )}
-        </>
+        </Box>
       ) : (
         <Typography variant="body2">No Issues yet! </Typography>
       )}

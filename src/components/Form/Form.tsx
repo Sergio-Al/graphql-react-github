@@ -20,7 +20,7 @@ export default function Form({
         container
         direction="row"
         alignItems="center"
-        sx={{ "&>*:not(:last-child)": { mr: 3 } }}
+        sx={{ "&>*:not(:last-child)": { mr: 3, my: 1} }}
       >
         <Typography variant="h6">
           <label>Show open issues for https://github.com/</label>
