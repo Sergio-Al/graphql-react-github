@@ -9,6 +9,7 @@ import {
   ListItem,
   Box,
   Button,
+  Divider,
 } from "@mui/material";
 import { NearbyError } from "@mui/icons-material";
 
@@ -58,12 +59,13 @@ export default function Repository({
 
   return (
     <>
-      <Typography variant="body2">
+      <Typography mb={1} variant="body2">
         <Link href={repository.url} underline="none" target="_blank">
           {repository.name}
         </Link>
       </Typography>
-      <Typography mt={3} variant="body1">
+      <Divider />
+      <Typography mt={1} variant="body1">
         Issues
       </Typography>
       {repository.issues.edges.length > 0 ? (
