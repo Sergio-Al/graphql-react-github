@@ -10,13 +10,16 @@ import Repository from "../Repository/Repository";
 type OrganizationProps = {
   organization: { url?: string; name?: string; repository: any };
   errors?: Array<any>;
+  fetchMoreIssues: React.MouseEventHandler;
 };
 
 export default function Organization({
   organization,
-  errors,
+  errors = [],
+  fetchMoreIssues,
 }: OrganizationProps) {
-  if (errors) {
+  if (errors.length > 0) {
+    console.log("this is an error", errors);
     return (
       <Box
         sx={{
@@ -33,7 +36,7 @@ export default function Organization({
         {errors
           .map((error: { message?: string }) => {
             if (error.message) return error.message;
-            return '';
+            return "";
           })
           .join()}
       </Box>
@@ -55,7 +58,10 @@ export default function Organization({
           </Link>
         </Typography>
         <Typography variant="body1">Repository</Typography>
-        <Repository repository={organization.repository} />
+        <Repository
+          fetchMoreIssues={fetchMoreIssues}
+          repository={organization.repository}
+        />
       </CardContent>
     </Card>
   );

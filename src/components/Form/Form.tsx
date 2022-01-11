@@ -1,19 +1,17 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { TextField, Grid, Button, Typography } from "@mui/material";
 
-export default function Form() {
-  const [path, setPath] = useState(
-    "the-road-to-learn-react/the-road-to-learn-react"
-  );
-
+export default function Form({
+  path,
+  setPath,
+  handleSubmit,
+}: {
+  path: string;
+  setPath: React.Dispatch<React.SetStateAction<string>>;
+  handleSubmit: React.FormEventHandler<HTMLFormElement>;
+}) {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    console.log(e.currentTarget.value);
     setPath(e.currentTarget.value);
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log(path);
   };
 
   return (
