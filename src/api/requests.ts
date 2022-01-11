@@ -68,8 +68,13 @@ query ($organization: String!, $repository: String!, $cursor: String) {
       name
       url
       repository(name: $repository) {
+        id
         name
         url
+        stargazers {
+          totalCount
+        }
+        viewerHasStarred
         issues(first: 5, after: $cursor, states: OPEN) {
           pageInfo {
             hasNextPage
@@ -97,3 +102,23 @@ query ($organization: String!, $repository: String!, $cursor: String) {
       }
     }
   }`;
+
+export const ADD_STAR = `
+  mutation ($repositoryId: ID!) {
+    addStar(input:{starrableId: $repositoryId})
+    {
+      starrable {
+        viewerHasStarred
+      }
+    }
+  }`;
+
+export const REMOVE_STAR = `
+mutation ($repositoryId: ID!) {
+  removeStar(input:{starrableId: $repositoryId})
+  {
+    starrable {
+      viewerHasStarred
+    }
+  }
+}`

@@ -10,50 +10,23 @@ import {
   Box,
   Button,
   Divider,
+  Grid,
 } from "@mui/material";
 import { NearbyError } from "@mui/icons-material";
 
+import { RepositoryType } from "../../utils/types";
 import { ocurrencesReactions } from "../../utils/Ocurrences";
 
-interface Node {
-  id: string;
-}
-
-interface NodeEdgesReactions extends Node {
-  content: string;
-  id: string;
-}
-
-interface NodeEdgesIssues extends Node {
-  url: string;
-  title: string;
-  reactions: { edges: Array<EdgesReactions> };
-}
-
-type EdgesReactions = { node: NodeEdgesReactions };
-
-type EdgesIssues = {
-  node: NodeEdgesIssues;
-};
-
-interface Repos extends Object {
-  url: string;
-  name: string;
-  issues: { edges: Array<EdgesIssues>; pageInfo: { hasNextPage: boolean } };
-}
-
 export default function Repository({
-  repository = {
-    url: "",
-    name: "",
-    issues: { edges: [], pageInfo: { hasNextPage: false } },
-  },
+  repository,
   fetchMoreIssues,
+  onStarRepository,
 }: {
-  repository: Repos;
+  repository: RepositoryType;
   fetchMoreIssues: React.MouseEventHandler;
+  onStarRepository: (id: string, starred: boolean) => void;
 }) {
-  if (!repository) {
+  if (repository === null) {
     return <Typography variant="h6">That repo doesn't exists</Typography>;
   }
 
@@ -65,6 +38,28 @@ export default function Repository({
         </Link>
       </Typography>
       <Divider />
+      <Box mt={2}>
+        <Grid container alignItems="center" spacing={2}>
+          <Grid item>
+            <Typography mr={1} variant="body2">
+              {repository.stargazers.totalCount}
+            </Typography>
+          </Grid>
+          <Grid item>
+            <Button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                onStarRepository(repository.id, repository.viewerHasStarred);
+              }}
+              variant={repository.viewerHasStarred ? "outlined" : "contained"}
+            >
+              {repository.viewerHasStarred ? "unstar" : "star"}
+            </Button>
+          </Grid>
+        </Grid>
+      </Box>
+
       <Typography mt={1} variant="body1">
         Issues
       </Typography>

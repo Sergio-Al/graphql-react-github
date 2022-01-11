@@ -4,10 +4,15 @@ import Organization from "./components/Organization/Organization";
 import { Container, Box, Divider, Typography } from "@mui/material";
 
 import { APIGithubGraphQL } from "./api";
-import { GET_ISSUES_OF_REPOSITORY_DYNAMIC } from "./api/requests";
+import {
+  GET_ISSUES_OF_REPOSITORY_DYNAMIC,
+  ADD_STAR,
+  REMOVE_STAR,
+} from "./api/requests";
+import { organizationDefault } from "./utils/defaults";
 
 function App() {
-  const [organization, setOrganization] = useState(null);
+  const [organization, setOrganization] = useState(organizationDefault);
   const [errors, setErrors] = useState([]);
   const [endCursor, setCursor] = useState(null);
   const [path, setPath] = useState("facebook/react");
@@ -23,13 +28,39 @@ function App() {
     });
   };
 
+  function modifyStarred(repositoryId: string, isStarred: boolean) {
+    APIGithubGraphQL.post("", {
+      query: isStarred ? REMOVE_STAR : ADD_STAR,
+      variables: { repositoryId },
+    }).then((response) => {
+      const { totalCount } = organization.repository.stargazers;
+      const newViewerStarredValue: boolean = isStarred
+        ? response.data.data.removeStar.starrable.viewerHasStarred
+        : response.data.data.addStar.starrable.viewerHasStarred;
+      setOrganization({
+        ...organization,
+        repository: {
+          ...organization.repository,
+          viewerHasStarred: newViewerStarredValue,
+          stargazers: {
+            totalCount: newViewerStarredValue ? totalCount + 1 : totalCount - 1,
+          },
+        },
+      });
+    });
+  }
+
   const onFetchFromGithub = useCallback(
     (path: string, cursor: string | null = null) => {
       getIssuesOfRespository(path, cursor).then((response) => {
+        // Getting data... console.log(response.data.data.organization);
         setOrganization(response.data.data.organization);
-        setCursor(
-          response.data.data.organization.repository.issues.pageInfo.endCursor
-        );
+        if (response.data.data.organization.repository !== null) {
+          setCursor(
+            response.data.data.organization.repository.issues.pageInfo.endCursor
+          );
+        }
+
         setErrors(response.data.errors);
       });
     },
@@ -48,6 +79,16 @@ function App() {
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     onFetchFromGithub(path, "");
+  };
+
+  const onStarRepository = (id: string, starred: boolean) => {
+    // your id and starred state
+    // console.log(
+    //   `This is your id ${id} and your have ${
+    //     starred ? "starred!" : "not Starred yet"
+    //   }`
+    // );
+    modifyStarred(id, starred);
   };
 
   return (
@@ -72,6 +113,7 @@ function App() {
           organization={organization}
           errors={errors}
           fetchMoreIssues={onFetchMoreIssues}
+          onStarRepository={onStarRepository}
         />
       ) : (
         <Typography variant="overline" display="block" gutterBottom>

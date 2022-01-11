@@ -6,17 +6,20 @@ import Link from "@mui/material/Link";
 import Box from "@mui/material/Box";
 
 import Repository from "../Repository/Repository";
+import { OrganizationType } from "../../utils/types";
 
 type OrganizationProps = {
-  organization: { url?: string; name?: string; repository: any };
+  organization: OrganizationType;
   errors?: Array<any>;
   fetchMoreIssues: React.MouseEventHandler;
+  onStarRepository: (id: string, starred: boolean) => void;
 };
 
 export default function Organization({
   organization,
   errors = [],
   fetchMoreIssues,
+  onStarRepository,
 }: OrganizationProps) {
   if (errors.length > 0) {
     console.log("this is an error", errors);
@@ -61,6 +64,7 @@ export default function Organization({
         <Repository
           fetchMoreIssues={fetchMoreIssues}
           repository={organization.repository}
+          onStarRepository={onStarRepository}
         />
       </CardContent>
     </Card>
