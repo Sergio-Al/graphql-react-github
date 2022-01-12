@@ -92,7 +92,10 @@ export default function Repository({
                   <ListItemIcon>
                     <NearbyError />
                   </ListItemIcon>
-                  <ListItemText primary={issue.node.title} />
+                  <ListItemText
+                    primary={issue.node.title}
+                    sx={{ color: "gray" }}
+                  />
                   <Box>
                     <List sx={{ py: 0 }}>
                       {issue.node.reactions.edges.length > 0 ? (

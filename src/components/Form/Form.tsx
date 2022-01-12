@@ -13,6 +13,8 @@ export default function Form({
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setPath(e.currentTarget.value);
   };
+  const repoValidation: RegExp = /^[a-zA-Z0-9_-]*\/[a-zA-Z0-9_-]*$/gm;
+  const isValidPath: boolean = path.match(repoValidation) ? true : false;
 
   return (
     <form onSubmit={handleSubmit}>
@@ -20,7 +22,7 @@ export default function Form({
         container
         direction="row"
         alignItems="center"
-        sx={{ "&>*:not(:last-child)": { mr: 3, my: 1} }}
+        sx={{ "&>*:not(:last-child)": { mr: 3, my: 1 } }}
       >
         <Typography variant="h6">
           <label>Show open issues for https://github.com/</label>
@@ -32,6 +34,8 @@ export default function Form({
           value={path}
           onChange={handleChange}
           sx={{ width: 300 }}
+          helperText={!isValidPath ? "Example: facebook/react" : ""}
+          error={!isValidPath}
         />
         <Button type="submit" variant="contained">
           Search
